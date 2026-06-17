@@ -67,6 +67,11 @@ function main() {
     return;
   }
 
+  // 统一将新采集情报的日期设为今天（采集日期），与狐狸模式一致
+  const todayBJ = new Date(Date.now() + 8 * 3600000);
+  const todayStr = `${todayBJ.getUTCFullYear()}-${String(todayBJ.getUTCMonth() + 1).padStart(2, '0')}-${String(todayBJ.getUTCDate()).padStart(2, '0')}`;
+  newItems.forEach(item => { item.date = todayStr; });
+
   // 读取HTML
   const html = fs.readFileSync(HTML_PATH, 'utf-8');
 
@@ -81,10 +86,10 @@ function main() {
 
   intelData.topFeed = [...uniqueNewItems, ...(intelData.topFeed || [])].slice(0, MAX_TOP_FEED);
 
-  // 更新时间戳
-  const now = new Date();
+  // 更新时间戳 (使用北京时间 UTC+8)
+  const now = new Date(Date.now() + 8 * 3600000);
   const pad = n => String(n).padStart(2, '0');
-  intelData.lastUpdated = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
+  intelData.lastUpdated = `${now.getUTCFullYear()}-${pad(now.getUTCMonth() + 1)}-${pad(now.getUTCDate())} ${pad(now.getUTCHours())}:${pad(now.getUTCMinutes())}`;
 
   // 更新统计
   if (intelData.stats && intelData.stats[0]) {
