@@ -1,0 +1,44 @@
+name: Daily Intel Update
+
+on:
+  schedule:
+    - cron: '30 2 * * 1-5'  # UTC 02:30 = 北京 10:30，工作日执行
+  workflow_dispatch: {}       # 支持手动触发
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Collect RSS feeds
+        run: node scripts/collect.js
+
+      - name: Analyze with DeepSeek
+        run: node scripts/analyze.js
+        env:
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+
+      - name: Inject into HTML
+        run: node scripts/inject.js
+
+      - name: Commit & Push
+        run: |
+          git config user.name "Intel Bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add index.html
+          git diff --cached --quiet || git commit -m "chore: daily intel update $(date +%Y-%m-%d)"
+          git push

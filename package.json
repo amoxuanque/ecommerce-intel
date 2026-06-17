@@ -1,0 +1,15 @@
+{
+  "name": "ecommerce-intel",
+  "version": "1.0.0",
+  "description": "电商竞争情报站 - 每日自动更新管线",
+  "private": true,
+  "scripts": {
+    "collect": "node scripts/collect.js",
+    "analyze": "node scripts/analyze.js",
+    "inject": "node scripts/inject.js",
+    "update": "node scripts/collect.js && node scripts/analyze.js && node scripts/inject.js"
+  },
+  "dependencies": {
+    "rss-parser": "^3.13.0"
+  }
+}
