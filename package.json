@@ -1,0 +1,13 @@
+{
+  "name": "ecommerce-intel",
+  "version": "1.0.0",
+  "description": "电商竞争情报站 - 全自动每日更新 (Tavily + DeepSeek)",
+  "private": true,
+  "scripts": {
+    "search": "node scripts/search.js",
+    "analyze": "node scripts/analyze.js",
+    "inject": "node scripts/inject.js",
+    "update": "node scripts/search.js && node scripts/analyze.js && node scripts/inject.js"
+  },
+  "dependencies": {}
+}
